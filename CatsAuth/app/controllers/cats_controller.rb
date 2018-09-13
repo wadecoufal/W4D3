@@ -1,4 +1,5 @@
 class CatsController < ApplicationController
+  before_action :require_ownership, only: [:edit, :update]
   def index
     @cats = Cat.all
     render :index
@@ -15,6 +16,8 @@ class CatsController < ApplicationController
   end
 
   def create
+    # debugger
+    params[:cat][:user_id] = current_user.id
     @cat = Cat.new(cat_params)
     if @cat.save
       redirect_to cat_url(@cat)
@@ -42,6 +45,6 @@ class CatsController < ApplicationController
   private
 
   def cat_params
-    params.require(:cat).permit(:age, :birth_date, :color, :description, :name, :sex)
+    params.require(:cat).permit(:age, :birth_date, :color, :description, :name, :sex, :user_id)
   end
 end
